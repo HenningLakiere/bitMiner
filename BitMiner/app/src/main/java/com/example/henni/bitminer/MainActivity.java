@@ -25,11 +25,13 @@ import java.nio.file.Path;
 public class MainActivity extends AppCompatActivity {
 
     private Initialize i;
+    private Context c;
 
     private int bitCoins = 0;
     private int idleValue = 0;
     private int clickValue = 1;
     private int price;
+    private String[] data;
 
     private double GPU1Count = 0;
     private double GPU2Count = 0;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private double CPU3Count = 0;
     private double CPU4Count = 0;
     private double CPU5Count = 0;
+
 
     Handler h = new Handler(){
         @Override
@@ -63,11 +66,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
+        c = getBaseContext().getApplicationContext();
 
         i = new Initialize();
-        runBackgroundThread();
+        i.newFile(c);
+
+        bitCoins = Integer.valueOf(i.readFromFile(c));
+
+        runFastThread();
+        runSlowThread();
+
 
 
         final Button btnClick = findViewById(R.id.btnClick);
@@ -76,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 bitCoins = bitCoins + clickValue;
                 setbitCoins(bitCoins);
+                i.writeToFile(String.valueOf(bitCoins),c);
             }
         });
 
@@ -261,28 +270,43 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void runBackgroundThread(){
+    public void runFastThread(){
         Runnable r = new Runnable() {
             @Override
             public void run() {
-
                 while(bitCoins>=0){
                     bitCoins = bitCoins + idleValue;
                     setbitCoins(bitCoins);
-
                     synchronized (this){
                         try {
                             wait(100);
                         }catch (Exception e){}
                     }
                 }
-
             }
         };
-
         Thread t = new Thread(r);
         t.start();
     }
+
+    public void runSlowThread(){
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                while(bitCoins>=0){
+                    i.writeToFile(String.valueOf(bitCoins),c);
+                    synchronized (this){
+                        try {
+                            wait(2000);
+                        }catch (Exception e){}
+                    }
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+    }
+
 
     public void setbitCoins(double bitCoins){
         Bundle bundle = new Bundle();

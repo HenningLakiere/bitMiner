@@ -24,26 +24,12 @@ import java.nio.file.Path;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Initialize i;
+    private SaveLoad i;
     private Context c;
 
     private int bitCoins = 0;
-    private int idleValue = 0;
-    private int clickValue = 1;
     private int price;
-    private String[] data;
-
-    private double GPU1Count = 0;
-    private double GPU2Count = 0;
-    private double GPU3Count = 0;
-    private double GPU4Count = 0;
-    private double GPU5Count = 0;
-
-    private double CPU1Count = 0;
-    private double CPU2Count = 0;
-    private double CPU3Count = 0;
-    private double CPU4Count = 0;
-    private double CPU5Count = 0;
+    private Integer[] stats;
 
 
     Handler h = new Handler(){
@@ -54,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
             final TextView txtIdleValue = findViewById(R.id.txtIdleValue);
             final TextView txtClickValue = findViewById(R.id.txtClickValue);
 
-            txtBitCoins.setText(String.valueOf(bitCoins) + "B");
-            txtIdleValue.setText("GPU Speed: " + String.valueOf(idleValue));
-            txtClickValue.setText("CPU Speed: " + String.valueOf(clickValue));
+            txtBitCoins.setText(stats[1] + " B");
+            txtIdleValue.setText("GPU Speed: " + String.valueOf(stats[4]));
+            txtClickValue.setText("CPU Speed: " + String.valueOf(stats[3]));
 
         }
     };
@@ -67,24 +53,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         c = getBaseContext().getApplicationContext();
+        stats = new Integer[15];
 
-        i = new Initialize();
+        i = new SaveLoad();
         i.newFile(c);
 
-        bitCoins = Integer.valueOf(i.readFromFile(c));
+        stats = i.readFromFile(c);
 
         runFastThread();
         runSlowThread();
-
 
 
         final Button btnClick = findViewById(R.id.btnClick);
         btnClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bitCoins = bitCoins + clickValue;
-                setbitCoins(bitCoins);
-                i.writeToFile(String.valueOf(bitCoins),c);
+                stats[1] = stats[1] + stats[3];
+                setBitCoins(stats[1]);
+                i.writeToFile(stats,c);
             }
         });
 
@@ -121,13 +107,13 @@ public class MainActivity extends AppCompatActivity {
         btnGpu1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (1000 * Math.pow(1.1, GPU1Count));
+                price = (int) (1000 * Math.pow(1.1, stats[10]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    idleValue = idleValue + 10;
-                    GPU1Count++;
-                    price = (int) (1000 * Math.pow(1.1, GPU1Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[4] = stats[4] + 10;
+                    stats[10]++;
+                    price = (int) (1000 * Math.pow(1.1, stats[10]));
                     btnGpu1.setText("GPU 1 " + price + "B");
                 }
             }
@@ -136,13 +122,13 @@ public class MainActivity extends AppCompatActivity {
         btnGpu2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (10000 * Math.pow(1.1, GPU2Count));
+                price = (int) (10000 * Math.pow(1.1, stats[11]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    idleValue = idleValue + 50;
-                    GPU2Count++;
-                    price = (int) (10000 * Math.pow(1.1, GPU2Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[4] = stats[4] + 50;
+                    stats[11]++;
+                    price = (int) (10000 * Math.pow(1.1, stats[11]));
                     btnGpu2.setText("GPU 2 " + price + "B");
                 }
             }
@@ -151,13 +137,13 @@ public class MainActivity extends AppCompatActivity {
         btnGpu3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (100000 * Math.pow(1.1, GPU3Count));
+                price = (int) (100000 * Math.pow(1.1, stats[12]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    idleValue = idleValue + 200;
-                    GPU3Count++;
-                    price = (int) (100000 * Math.pow(1.1, GPU3Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[4] = stats[4] + 200;
+                    stats[12]++;
+                    price = (int) (100000 * Math.pow(1.1, stats[12]));
                     btnGpu3.setText("GPU 3 " + price + "B");
                 }
             }
@@ -166,13 +152,13 @@ public class MainActivity extends AppCompatActivity {
         btnGpu4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (1000000 * Math.pow(1.1, GPU4Count));
+                price = (int) (1000000 * Math.pow(1.1, stats[13]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    idleValue = idleValue + 600;
-                    GPU4Count++;
-                    price = (int) (1000000 * Math.pow(1.1, GPU4Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[4] = stats[4] + 600;
+                    stats[13]++;
+                    price = (int) (1000000 * Math.pow(1.1, stats[13]));
                     btnGpu4.setText("GPU 4 " + price + "B");
                 }
             }
@@ -181,13 +167,13 @@ public class MainActivity extends AppCompatActivity {
         btnGpu5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (10000000 * Math.pow(1.1, GPU5Count));
+                price = (int) (10000000 * Math.pow(1.1, stats[14]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    idleValue = idleValue + 1200;
-                    GPU5Count++;
-                    price = (int) (10000000 * Math.pow(1.1, GPU5Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[4] = stats[4] + 1200;
+                    stats[14]++;
+                    price = (int) (10000000 * Math.pow(1.1, stats[14]));
                     btnGpu5.setText("GPU 5 " + price + "B");
                 }
             }
@@ -196,13 +182,13 @@ public class MainActivity extends AppCompatActivity {
         btnCpu1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (100 * Math.pow(1.1, CPU1Count));
+                price = (int) (100 * Math.pow(1.1, stats[5]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    clickValue = clickValue + 1;
-                    CPU1Count++;
-                    price = (int) (100 * Math.pow(1.1, CPU1Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[3] = stats[3] + 1;
+                    stats[5]++;
+                    price = (int) (100 * Math.pow(1.1, stats[5]));
                     btnCpu1.setText("CPU 1 " + price + "B");
                 }
             }
@@ -211,13 +197,13 @@ public class MainActivity extends AppCompatActivity {
         btnCpu2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (500 * Math.pow(1.1, CPU2Count));
+                price = (int) (500 * Math.pow(1.1, stats[6]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    clickValue = clickValue + 5;
-                    CPU2Count++;
-                    price = (int) (500 * Math.pow(1.1, CPU2Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[3] = stats[3] + 5;
+                    stats[6]++;
+                    price = (int) (500 * Math.pow(1.1, stats[6]));
                     btnCpu2.setText("CPU 2 " + price + "B");
                 }
             }
@@ -226,13 +212,13 @@ public class MainActivity extends AppCompatActivity {
         btnCpu3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (3000 * Math.pow(1.1, CPU3Count));
+                price = (int) (3000 * Math.pow(1.1, stats[7]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    clickValue = clickValue + 20;
-                    CPU3Count++;
-                    price = (int) (3000 * Math.pow(1.1, CPU3Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[3] = stats[3] + 20;
+                    stats[7]++;
+                    price = (int) (3000 * Math.pow(1.1, stats[7]));
                     btnCpu3.setText("CPU 3 " + price + "B");
                 }
             }
@@ -241,13 +227,13 @@ public class MainActivity extends AppCompatActivity {
         btnCpu4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (30000 * Math.pow(1.1, CPU4Count));
+                price = (int) (30000 * Math.pow(1.1, stats[8]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    clickValue = clickValue + 100;
-                    CPU4Count++;
-                    price = (int) (30000 * Math.pow(1.1, CPU4Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[3] = stats[3] + 100;
+                    stats[8]++;
+                    price = (int) (30000 * Math.pow(1.1, stats[8]));
                     btnCpu4.setText("CPU 4 " + price + "B");
                 }
             }
@@ -256,13 +242,13 @@ public class MainActivity extends AppCompatActivity {
         btnCpu5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                price = (int) (1000000 * Math.pow(1.1, CPU5Count));
+                price = (int) (1000000 * Math.pow(1.1, stats[9]));
 
-                if(bitCoins>=price){
-                    bitCoins=bitCoins-price;
-                    clickValue = clickValue + 3000;
-                    CPU5Count++;
-                    price = (int) (1000000 * Math.pow(1.1, CPU5Count));
+                if(stats[1]>=price){
+                    stats[1]=stats[1]-price;
+                    stats[3] = stats[3] + 3000;
+                    stats[9]++;
+                    price = (int) (1000000 * Math.pow(1.1, stats[9]));
                     btnCpu5.setText("CPU 5 " + price + "B");
                 }
             }
@@ -274,9 +260,9 @@ public class MainActivity extends AppCompatActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                while(bitCoins>=0){
-                    bitCoins = bitCoins + idleValue;
-                    setbitCoins(bitCoins);
+                while(stats[1]>=0){
+                    stats[1] = stats[1] + stats[4];
+                    setBitCoins(bitCoins);
                     synchronized (this){
                         try {
                             wait(100);
@@ -293,8 +279,8 @@ public class MainActivity extends AppCompatActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                while(bitCoins>=0){
-                    i.writeToFile(String.valueOf(bitCoins),c);
+                while(stats[1]>=0){
+                    i.writeToFile(stats,c);
                     synchronized (this){
                         try {
                             wait(2000);
@@ -308,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void setbitCoins(double bitCoins){
+    public void setBitCoins(double bitCoins){
         Bundle bundle = new Bundle();
         Message msg = new Message();
 
@@ -316,11 +302,5 @@ public class MainActivity extends AppCompatActivity {
         msg.setData(bundle);
         h.sendMessage(msg);
     }
-
-    public int getBitCoins(){
-        return bitCoins;
-    }
-
-
 
 }
